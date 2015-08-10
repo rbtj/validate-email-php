@@ -1,0 +1,28 @@
+<?php
+function validate_email($email){
+$exp = "^[a-z\'0-9]+([._-][a-z\'0-9]+)*@([a-z0-9]+([._-][a-z0-9]+))+$";
+if(eregi($exp,$email)){
+if(checkdnsrr(array_pop(explode("@",$email)),"MX")){
+$result='good';
+return $result;
+}else{
+$result='bad';
+return $result;
+}
+}else{
+$result='bad';
+return $result;
+}
+}
+
+mysql_connect("10.10.10.14", "root", "password") or die(mysql_error());
+$result = mysql_query("SELECT email FROM database.account")
+or die(mysql_error());  
+$temp = mysql_fetch_array( $result );
+while($temp = mysql_fetch_array($result)){
+if (validate_email($temp['email']) == 'bad'){
+        echo $temp['email'];
+        echo "<br />";
+}
+}
+?>
